@@ -16,10 +16,25 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS Configuration
 const corsOptions = {
-  origin:
-    config.nodeEnv === "development"
-      ? "*" // Allow any origin in development
-      : config.frontendUrl, // Restrict to specific URL in production
+  origin: (origin, callback) => {
+    if (config.nodeEnv === "development") {
+      // In development, allow any origin
+      // When credentials are enabled, we need to handle the origin properly
+      if (!origin) {
+        // Allow requests with no origin (like mobile apps, curl, etc.)
+        callback(null, true);
+      } else {
+        callback(null, origin);
+      }
+    } else {
+      // In production, restrict to specific frontend URL
+      if (!origin || origin === config.frontendUrl) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    }
+  },
   credentials: true, // Important for HttpOnly cookies
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],

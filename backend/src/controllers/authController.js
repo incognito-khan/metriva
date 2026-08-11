@@ -1,4 +1,9 @@
 const User = require("../models/User");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../utils/tokens");
+const config = require("../config/env");
 
 // Register a new user
 const register = async (req, res, next) => {
@@ -79,7 +84,32 @@ const login = async (req, res, next) => {
       });
     }
 
+    // Generate access and refresh tokens
+    const accessToken = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
+
+    // Determine cookie settings based on environment
+    const isProduction = config.nodeEnv === "production";
+    const baseCookieOptions = {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "strict" : "lax",
+    };
+
+    // Set access token cookie (15 minutes)
+    res.cookie("accessToken", accessToken, {
+      ...baseCookieOptions,
+      maxAge: 15 * 60 * 1000, // 15 minutes in milliseconds
+    });
+
+    // Set refresh token cookie (7 days)
+    res.cookie("refreshToken", refreshToken, {
+      ...baseCookieOptions,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+    });
+
     // Return safe user data (password is excluded by toJSON method)
+    // Tokens are NOT included in the JSON response - they're in HttpOnly cookies
     res.status(200).json({
       success: true,
       message: "Login successful",
