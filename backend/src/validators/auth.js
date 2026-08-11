@@ -5,44 +5,52 @@ const passwordComplexityRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
 
 // Registration validation schema
-const registerSchema = z.object({
-  name: z
-    .string()
-    .min(2, "Name must be at least 2 characters")
-    .max(50, "Name cannot exceed 50 characters")
-    .trim(),
-  email: z.string().email("Invalid email format").toLowerCase().trim(),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(
-      passwordComplexityRegex,
-      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-    ),
-});
+const registerSchema = z
+  .object({
+    name: z
+      .string()
+      .min(2, "Name must be at least 2 characters")
+      .max(50, "Name cannot exceed 50 characters")
+      .trim(),
+    email: z.string().email("Invalid email format").toLowerCase().trim(),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(
+        passwordComplexityRegex,
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+      ),
+  })
+  .strict(); // Reject unknown fields
 
 // Login validation schema (for future use)
-const loginSchema = z.object({
-  email: z.string().email("Invalid email format").toLowerCase().trim(),
-  password: z.string().min(1, "Password is required"),
-});
+const loginSchema = z
+  .object({
+    email: z.string().email("Invalid email format").toLowerCase().trim(),
+    password: z.string().min(1, "Password is required"),
+  })
+  .strict(); // Reject unknown fields
 
 // Forgot password validation schema (for future use)
-const forgotPasswordSchema = z.object({
-  email: z.string().email("Invalid email format").toLowerCase().trim(),
-});
+const forgotPasswordSchema = z
+  .object({
+    email: z.string().email("Invalid email format").toLowerCase().trim(),
+  })
+  .strict(); // Reject unknown fields
 
 // Reset password validation schema (for future use)
-const resetPasswordSchema = z.object({
-  token: z.string().min(1, "Token is required"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(
-      passwordComplexityRegex,
-      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-    ),
-});
+const resetPasswordSchema = z
+  .object({
+    token: z.string().min(1, "Token is required"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(
+        passwordComplexityRegex,
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+      ),
+  })
+  .strict(); // Reject unknown fields
 
 // Validation middleware factory
 const validate = (schema) => {
