@@ -216,9 +216,35 @@ const getCurrentUser = async (req, res, next) => {
   }
 };
 
+// Logout user - clear authentication cookies
+const logout = async (req, res) => {
+  // Determine cookie settings based on environment
+  // Must match the options used when cookies were originally set
+  const isProduction = config.nodeEnv === "production";
+  const baseCookieOptions = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "strict" : "lax",
+  };
+
+  // Clear access token cookie by setting it with maxAge: 0
+  res.clearCookie("accessToken", baseCookieOptions);
+
+  // Clear refresh token cookie by setting it with maxAge: 0
+  res.clearCookie("refreshToken", baseCookieOptions);
+
+  // Return minimal success response
+  // Tokens are NOT included in the JSON response
+  res.status(200).json({
+    success: true,
+    message: "Logout successful",
+  });
+};
+
 module.exports = {
   register,
   login,
   refresh,
   getCurrentUser,
+  logout,
 };
