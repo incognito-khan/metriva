@@ -1,11 +1,14 @@
 const User = require("../models/User");
 const mongoose = require("mongoose");
+const crypto = require("crypto");
+const bcrypt = require("bcrypt");
 const {
   generateAccessToken,
   generateRefreshToken,
   verifyRefreshToken,
 } = require("../utils/tokens");
 const config = require("../config/env");
+const { sendPasswordResetEmail } = require("../services/emailService");
 
 // Register a new user
 const register = async (req, res, next) => {
@@ -241,10 +244,65 @@ const logout = async (req, res) => {
   });
 };
 
+// Forgot password - send password reset email
+const forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    // Normalize email for consistency
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Find user by email
+    const user = await User.findOne({ email: normalizedEmail });
+
+    // Always return the same generic response to prevent account enumeration
+    // Even if user doesn't exist, we return success
+    if (!user) {
+      return res.status(200).json({
+        success: true,
+        message:
+          "If an account exists with this email, a password reset link has been sent.",
+      });
+    }
+
+    // Generate cryptographically secure random reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    // Hash the reset token before storing in database
+    const hashedResetToken = await bcrypt.hash(resetToken, 10);
+
+    // Set reset token expiration (1 hour from now)
+    const resetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    // Store hashed token and expiration in user document
+    user.passwordResetToken = hashedResetToken;
+    user.passwordResetExpires = resetExpires;
+    await user.save();
+
+    // Generate reset URL
+    const resetUrl = `${config.frontendUrl}/reset-password/${resetToken}`;
+
+    // Send password reset email
+    await sendPasswordResetEmail(user.email, resetUrl, user.name);
+
+    // Return generic success response
+    // Do not expose the reset token in the response
+    res.status(200).json({
+      success: true,
+      message:
+        "If an account exists with this email, a password reset link has been sent.",
+    });
+  } catch (error) {
+    // Pass errors to the error handling middleware
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
   refresh,
   getCurrentUser,
   logout,
+  forgotPassword,
 };

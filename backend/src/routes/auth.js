@@ -6,8 +6,14 @@ const {
   refresh,
   getCurrentUser,
   logout,
+  forgotPassword,
 } = require("../controllers/authController");
-const { validate, registerSchema, loginSchema } = require("../validators/auth");
+const {
+  validate,
+  registerSchema,
+  loginSchema,
+  forgotPasswordSchema,
+} = require("../validators/auth");
 const authenticate = require("../middleware/auth");
 
 // Register route
@@ -22,6 +28,9 @@ router.post("/refresh", refresh);
 // Logout route - does not require authentication
 // Users should be able to clear cookies even if their access token is expired
 router.post("/logout", logout);
+
+// Forgot password route
+router.post("/forgot-password", validate(forgotPasswordSchema), forgotPassword);
 
 // Get current authenticated user
 router.get("/me", authenticate, getCurrentUser);
