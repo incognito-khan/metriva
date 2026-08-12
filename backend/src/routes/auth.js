@@ -7,12 +7,14 @@ const {
   getCurrentUser,
   logout,
   forgotPassword,
+  resetPassword,
 } = require("../controllers/authController");
 const {
   validate,
   registerSchema,
   loginSchema,
   forgotPasswordSchema,
+  resetPasswordSchema,
 } = require("../validators/auth");
 const authenticate = require("../middleware/auth");
 
@@ -31,6 +33,10 @@ router.post("/logout", logout);
 
 // Forgot password route
 router.post("/forgot-password", validate(forgotPasswordSchema), forgotPassword);
+
+// Reset password route - does not require authentication
+// Users must be able to reset password using the reset token without being logged in
+router.post("/reset-password", validate(resetPasswordSchema), resetPassword);
 
 // Get current authenticated user
 router.get("/me", authenticate, getCurrentUser);

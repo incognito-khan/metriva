@@ -298,6 +298,74 @@ const forgotPassword = async (req, res, next) => {
   }
 };
 
+// Reset password - consume reset token and set new password
+const resetPassword = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+
+    // Find users that have a password reset token set
+    // We need to explicitly select the reset token fields since they have select: false
+    const usersWithResetToken = await User.find({
+      passwordResetToken: { $exists: true, $ne: null },
+    }).select("+passwordResetToken +passwordResetExpires");
+
+    // Find the user whose reset token matches the provided token
+    // We use bcrypt.compare() to verify the raw token against the stored hash
+    let user = null;
+    for (const candidateUser of usersWithResetToken) {
+      const isTokenValid = await bcrypt.compare(
+        token,
+        candidateUser.passwordResetToken,
+      );
+      if (isTokenValid) {
+        user = candidateUser;
+        break;
+      }
+    }
+
+    // If no user found with matching token, return generic error
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired password reset token.",
+      });
+    }
+
+    // Check if token has expired
+    if (user.passwordResetExpires < new Date()) {
+      // Clear expired token
+      user.passwordResetToken = undefined;
+      user.passwordResetExpires = undefined;
+      await user.save();
+
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired password reset token.",
+      });
+    }
+
+    // Update password
+    // The User model's pre-save middleware will automatically hash the new password
+    user.password = password;
+
+    // Clear reset token fields to make token single-use
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+
+    await user.save();
+
+    // Return success response
+    // Do not return password, token, or any sensitive information
+    res.status(200).json({
+      success: true,
+      message: "Password reset successfully.",
+    });
+  } catch (error) {
+    // Pass errors to the error handling middleware
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -305,4 +373,5 @@ module.exports = {
   getCurrentUser,
   logout,
   forgotPassword,
+  resetPassword,
 };

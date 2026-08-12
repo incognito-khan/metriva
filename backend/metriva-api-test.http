@@ -21,7 +21,7 @@ Content-Type: {{contentType}}
 {
   "name": "testuser",
   "email": "testuser@example.com",
-  "password": "SecurePassword123!"
+  "password": "NewSecurePassword456!"
 }
 
 ### Login User
@@ -30,7 +30,7 @@ Content-Type: {{contentType}}
 
 {
   "email": "testuser@example.com",
-  "password": "SecurePassword123!"
+  "password": "NewSecurePassword456!"
 }
 
 ### Refresh Token
@@ -47,6 +47,15 @@ Content-Type: {{contentType}}
 
 {
   "email": "testuser@example.com"
+}
+
+### Reset Password
+POST {{baseUrl}}/api/auth/reset-password
+Content-Type: {{contentType}}
+
+{
+  "token": "06dbb5603baad5d64c87a20227c10d4c0108f24c34fc4ffaadb87013a3d0e781",
+  "password": "NewSecurePassword456!"
 }
 
 ### Get Current User (Protected)
