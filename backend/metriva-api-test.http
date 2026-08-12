@@ -20,8 +20,8 @@ Content-Type: {{contentType}}
 
 {
   "name": "testuser",
-  "email": "testuser@example.com",
-  "password": "NewSecurePassword456!"
+  "email": "testuser1@example.com",
+  "password": "SecurePassword123!"
 }
 
 ### Login User
@@ -29,8 +29,8 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: {{contentType}}
 
 {
-  "email": "testuser@example.com",
-  "password": "NewSecurePassword456!"
+  "email": "testuser1@example.com",
+  "password": "SecurePassword123!"
 }
 
 ### Refresh Token
@@ -56,6 +56,31 @@ Content-Type: {{contentType}}
 {
   "token": "06dbb5603baad5d64c87a20227c10d4c0108f24c34fc4ffaadb87013a3d0e781",
   "password": "NewSecurePassword456!"
+}
+
+### Send OTP
+POST {{baseUrl}}/api/auth/send-otp
+Content-Type: {{contentType}}
+
+{
+  "email": "testuser1@example.com"
+}
+
+### Verify OTP
+POST {{baseUrl}}/api/auth/verify-otp
+Content-Type: {{contentType}}
+
+{
+  "email": "testuser1@example.com",
+  "otp": "829901"
+}
+
+### Resend OTP
+POST {{baseUrl}}/api/auth/resend-otp
+Content-Type: {{contentType}}
+
+{
+  "email": "user@example.com"
 }
 
 ### Get Current User (Protected)

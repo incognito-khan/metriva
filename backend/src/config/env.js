@@ -33,6 +33,9 @@ const config = {
     password: process.env.SMTP_PASSWORD || "",
     from: process.env.SMTP_FROM || "noreply@metriva.com",
   },
+  otp: {
+    expiresInMinutes: parseInt(process.env.OTP_EXPIRES_IN) || 5, // Default 5 minutes
+  },
 };
 
 module.exports = config;

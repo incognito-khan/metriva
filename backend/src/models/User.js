@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema(
       required: [true, "Password is required"],
       select: false, // Never include password in normal queries
     },
+    emailVerified: {
+      type: Boolean,
+      default: false, // New users start with unverified email
+    },
     passwordResetToken: {
       type: String,
       select: false, // Never include reset token in normal queries
@@ -30,6 +34,14 @@ const userSchema = new mongoose.Schema(
     passwordResetExpires: {
       type: Date,
       select: false, // Never include reset expiration in normal queries
+    },
+    otpHash: {
+      type: String,
+      select: false, // Never include OTP hash in normal queries
+    },
+    otpExpiresAt: {
+      type: Date,
+      select: false, // Never include OTP expiration in normal queries
     },
   },
   {
@@ -68,6 +80,8 @@ userSchema.methods.toJSON = function () {
   delete user.password;
   delete user.passwordResetToken;
   delete user.passwordResetExpires;
+  delete user.otpHash;
+  delete user.otpExpiresAt;
   return user;
 };
 

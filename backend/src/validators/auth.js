@@ -52,6 +52,28 @@ const resetPasswordSchema = z
   })
   .strict(); // Reject unknown fields
 
+// Send OTP validation schema
+const sendOTPSchema = z
+  .object({
+    email: z.string().email("Invalid email format").toLowerCase().trim(),
+  })
+  .strict(); // Reject unknown fields
+
+// Verify OTP validation schema
+const verifyOTPSchema = z
+  .object({
+    email: z.string().email("Invalid email format").toLowerCase().trim(),
+    otp: z.string().regex(/^\d{6}$/, "OTP must be exactly 6 digits"),
+  })
+  .strict(); // Reject unknown fields
+
+// Resend OTP validation schema
+const resendOTPSchema = z
+  .object({
+    email: z.string().email("Invalid email format").toLowerCase().trim(),
+  })
+  .strict(); // Reject unknown fields
+
 // Validation middleware factory
 const validate = (schema) => {
   return (req, res, next) => {
@@ -79,5 +101,8 @@ module.exports = {
   loginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
+  sendOTPSchema,
+  verifyOTPSchema,
+  resendOTPSchema,
   validate,
 };
