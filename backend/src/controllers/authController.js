@@ -38,10 +38,26 @@ const register = async (req, res, next) => {
       password,
     });
 
+    // Automatically send OTP for email verification
+    const otp = generateOTP();
+    const otpHash = await bcrypt.hash(otp, 10);
+    const otpExpiresAt = new Date(
+      Date.now() + config.otp.expiresInMinutes * 60 * 1000,
+    );
+
+    // Store OTP hash and expiration
+    user.otpHash = otpHash;
+    user.otpExpiresAt = otpExpiresAt;
+    await user.save();
+
+    // Send OTP email
+    await sendOTPEmail(user.email, otp, user.name, config.otp.expiresInMinutes);
+
     // Return safe user data (password is excluded by toJSON method)
     res.status(201).json({
       success: true,
-      message: "Account created successfully",
+      message:
+        "Account created successfully. Please check your email for verification code.",
       data: {
         user: user.toJSON(),
       },
