@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const mongoose = require("mongoose");
 const {
   generateAccessToken,
   generateRefreshToken,
@@ -175,8 +176,49 @@ const refresh = async (req, res, next) => {
   }
 };
 
+// Get current authenticated user
+const getCurrentUser = async (req, res, next) => {
+  try {
+    // User ID is attached to req.user by the authenticate middleware
+    const userId = req.user.id;
+
+    // Validate user ID format - ensure it's a valid MongoDB ObjectId
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user identifier",
+      });
+    }
+
+    // Find user by ID
+    // Password is automatically excluded by select: false in the User model
+    const user = await User.findById(userId);
+
+    // If user doesn't exist, return 404
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Return safe user data using the toJSON method
+    // This ensures password and other sensitive fields are never exposed
+    res.status(200).json({
+      success: true,
+      data: {
+        user: user.toJSON(),
+      },
+    });
+  } catch (error) {
+    // Pass database/server errors to the error handling middleware
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
   refresh,
+  getCurrentUser,
 };
