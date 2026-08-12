@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "../../hooks/useForm";
-import { useAuthApi } from "../../hooks/useAuthApi";
+import { useLogin } from "../../hooks/queries/auth";
 import Input from "../../components/Input";
 import PasswordInput from "../../components/PasswordInput";
 import FormError from "../../components/FormError";
@@ -16,7 +16,7 @@ import { validateEmail, validatePasswordRequired } from "../../lib/validation";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { handleApiCall } = useAuthApi();
+  const loginMutation = useLogin();
 
   const {
     formData,
@@ -24,8 +24,6 @@ export default function LoginPage() {
     touched,
     generalError,
     setGeneralError,
-    isLoading,
-    setIsLoading,
     handleChange,
     handleBlur,
     validateForm,
@@ -51,36 +49,28 @@ export default function LoginPage() {
       return;
     }
 
-    setIsLoading(true);
     setGeneralError("");
     setShowVerificationMessage(false);
 
-    const { success, message } = await handleApiCall(
-      "http://localhost:5000/auth/login",
+    loginMutation.mutate(
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+        email: formData.email,
+        password: formData.password,
+      },
+      {
+        onSuccess: () => {
+          router.push("/");
         },
-        body: JSON.stringify({
-          email: formData.email.toLowerCase().trim(),
-          password: formData.password,
-        }),
-      },
-      (data) => {
-        router.push("/");
-      },
-      (errorMessage, backendFieldErrors) => {
-        if (errorMessage && errorMessage.includes("verify your email")) {
-          setShowVerificationMessage(true);
-          setGeneralError(errorMessage);
-        } else {
-          setGeneralError(errorMessage);
-        }
+        onError: (error) => {
+          if (error.message && error.message.includes("verify your email")) {
+            setShowVerificationMessage(true);
+            setGeneralError(error.message);
+          } else {
+            setGeneralError(error.message);
+          }
+        },
       },
     );
-
-    setIsLoading(false);
   };
 
   return (
@@ -105,7 +95,7 @@ export default function LoginPage() {
           placeholder="Enter your email"
           autoComplete="email"
           error={touched.email ? errors.email : ""}
-          disabled={isLoading}
+          disabled={loginMutation.isPending}
         />
 
         <PasswordInput
@@ -118,7 +108,7 @@ export default function LoginPage() {
           placeholder="Enter your password"
           autoComplete="current-password"
           error={touched.password ? errors.password : ""}
-          disabled={isLoading}
+          disabled={loginMutation.isPending}
         />
 
         <div className="flex items-center justify-between">
@@ -132,7 +122,10 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <SubmitButton isLoading={isLoading} loadingText="Logging in...">
+        <SubmitButton
+          isLoading={loginMutation.isPending}
+          loadingText="Logging in..."
+        >
           Sign in
         </SubmitButton>
       </form>

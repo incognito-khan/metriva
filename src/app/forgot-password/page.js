@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "../../hooks/useForm";
-import { useAuthApi } from "../../hooks/useAuthApi";
+import { useForgotPassword } from "../../hooks/queries/auth";
 import Input from "../../components/Input";
 import FormError from "../../components/FormError";
 import AuthLayout from "../../components/auth/AuthLayout";
@@ -16,16 +16,15 @@ import { validateEmail } from "../../lib/validation";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
-  const { handleApiCall } = useAuthApi();
+  const forgotPasswordMutation = useForgotPassword();
 
   const {
     formData,
     errors,
+    setErrors,
     touched,
     generalError,
     setGeneralError,
-    isLoading,
-    setIsLoading,
     handleChange,
     handleBlur,
     validateForm,
@@ -50,29 +49,24 @@ export default function ForgotPasswordPage() {
       return;
     }
 
-    setIsLoading(true);
     setGeneralError("");
 
-    const { success, message } = await handleApiCall(
-      "http://localhost:5000/auth/forgot-password",
+    forgotPasswordMutation.mutate(
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+        email: formData.email,
+      },
+      {
+        onSuccess: () => {
+          setIsSubmitted(true);
         },
-        body: JSON.stringify({
-          email: formData.email.toLowerCase().trim(),
-        }),
-      },
-      (data) => {
-        setIsSubmitted(true);
-      },
-      (errorMessage, backendFieldErrors) => {
-        setGeneralError(errorMessage);
+        onError: (error) => {
+          setGeneralError(error.message);
+          if (error.fieldErrors) {
+            setErrors(error.fieldErrors);
+          }
+        },
       },
     );
-
-    setIsLoading(false);
   };
 
   const handleTryAnother = () => {
@@ -116,10 +110,13 @@ export default function ForgotPasswordPage() {
           placeholder="Enter your email"
           autoComplete="email"
           error={touched.email ? errors.email : ""}
-          disabled={isLoading}
+          disabled={forgotPasswordMutation.isPending}
         />
 
-        <SubmitButton isLoading={isLoading} loadingText="Sending...">
+        <SubmitButton
+          isLoading={forgotPasswordMutation.isPending}
+          loadingText="Sending..."
+        >
           Send reset link
         </SubmitButton>
       </form>

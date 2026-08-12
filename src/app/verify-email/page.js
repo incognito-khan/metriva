@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "../../hooks/useForm";
-import { useAuthApi } from "../../hooks/useAuthApi";
+import { useVerifyOtp, useResendOtp } from "../../hooks/queries/auth";
 import Input from "../../components/Input";
 import OTPInput from "../../components/OTPInput";
 import FormError from "../../components/FormError";
@@ -17,7 +17,8 @@ import { validateEmail, validateOTP } from "../../lib/validation";
 function VerifyEmailForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { handleApiCall } = useAuthApi();
+  const verifyOtpMutation = useVerifyOtp();
+  const resendOtpMutation = useResendOtp();
 
   const emailParam = searchParams.get("email");
 
@@ -25,11 +26,10 @@ function VerifyEmailForm() {
     formData,
     setFormData,
     errors,
+    setErrors,
     touched,
     generalError,
     setGeneralError,
-    isLoading,
-    setIsLoading,
     handleCustomChange,
     handleBlur,
     validateForm,
@@ -46,7 +46,6 @@ function VerifyEmailForm() {
   );
 
   const [successMessage, setSuccessMessage] = useState("");
-  const [isResending, setIsResending] = useState(false);
 
   useEffect(() => {
     if (emailParam) {
@@ -62,36 +61,31 @@ function VerifyEmailForm() {
       return;
     }
 
-    setIsLoading(true);
     setGeneralError("");
     setSuccessMessage("");
 
-    const { success, message } = await handleApiCall(
-      "http://localhost:5000/auth/verify-otp",
+    verifyOtpMutation.mutate(
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+        email: formData.email,
+        otp: formData.otp,
+      },
+      {
+        onSuccess: () => {
+          setSuccessMessage(
+            "Email verified successfully! Redirecting to login...",
+          );
+          setTimeout(() => {
+            router.push("/login");
+          }, 2000);
         },
-        body: JSON.stringify({
-          email: formData.email.toLowerCase().trim(),
-          otp: formData.otp,
-        }),
-      },
-      (data) => {
-        setSuccessMessage(
-          "Email verified successfully! Redirecting to login...",
-        );
-        setTimeout(() => {
-          router.push("/login");
-        }, 2000);
-      },
-      (errorMessage, backendFieldErrors) => {
-        setGeneralError(errorMessage);
+        onError: (error) => {
+          setGeneralError(error.message);
+          if (error.fieldErrors) {
+            setErrors(error.fieldErrors);
+          }
+        },
       },
     );
-
-    setIsLoading(false);
   };
 
   const handleResendOTP = async (e) => {
@@ -103,33 +97,28 @@ function VerifyEmailForm() {
       return;
     }
 
-    setIsResending(true);
     setGeneralError("");
     setSuccessMessage("");
 
-    const { success, message } = await handleApiCall(
-      "http://localhost:5000/auth/resend-otp",
+    resendOtpMutation.mutate(
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+        email: formData.email,
+      },
+      {
+        onSuccess: () => {
+          setSuccessMessage("New verification code sent to your email.");
+          setTimeout(() => {
+            setSuccessMessage("");
+          }, 5000);
         },
-        body: JSON.stringify({
-          email: formData.email.toLowerCase().trim(),
-        }),
-      },
-      (data) => {
-        setSuccessMessage("New verification code sent to your email.");
-        setTimeout(() => {
-          setSuccessMessage("");
-        }, 5000);
-      },
-      (errorMessage, backendFieldErrors) => {
-        setGeneralError(errorMessage);
+        onError: (error) => {
+          setGeneralError(error.message);
+          if (error.fieldErrors) {
+            setErrors(error.fieldErrors);
+          }
+        },
       },
     );
-
-    setIsResending(false);
   };
 
   return (
@@ -161,7 +150,7 @@ function VerifyEmailForm() {
           placeholder="Enter your email"
           autoComplete="email"
           error={touched.email ? errors.email : ""}
-          disabled={isLoading || isResending}
+          disabled={verifyOtpMutation.isPending || resendOtpMutation.isPending}
         />
 
         <OTPInput
@@ -171,19 +160,22 @@ function VerifyEmailForm() {
           value={formData.otp}
           onChange={(value) => handleCustomChange("otp", value)}
           error={touched.otp ? errors.otp : ""}
-          disabled={isLoading || isResending}
+          disabled={verifyOtpMutation.isPending || resendOtpMutation.isPending}
           length={6}
         />
 
-        <SubmitButton isLoading={isLoading} loadingText="Verifying...">
+        <SubmitButton
+          isLoading={verifyOtpMutation.isPending}
+          loadingText="Verifying..."
+        >
           Verify Email
         </SubmitButton>
 
         <SecondaryButton
           onClick={handleResendOTP}
-          isLoading={isResending}
+          isLoading={resendOtpMutation.isPending}
           loadingText="Sending..."
-          disabled={isLoading}
+          disabled={verifyOtpMutation.isPending}
         >
           Resend verification code
         </SecondaryButton>

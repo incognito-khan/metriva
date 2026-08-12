@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useForm } from "../../hooks/useForm";
-import { useAuthApi } from "../../hooks/useAuthApi";
+import { useRegister } from "../../hooks/queries/auth";
 import Input from "../../components/Input";
 import PasswordInput from "../../components/PasswordInput";
 import FormError from "../../components/FormError";
@@ -20,7 +20,7 @@ import {
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { handleApiCall } = useAuthApi();
+  const registerMutation = useRegister();
 
   const {
     formData,
@@ -29,8 +29,6 @@ export default function RegisterPage() {
     touched,
     generalError,
     setGeneralError,
-    isLoading,
-    setIsLoading,
     handleChange,
     handleBlur,
     validateForm,
@@ -59,36 +57,30 @@ export default function RegisterPage() {
       return;
     }
 
-    setIsLoading(true);
     setGeneralError("");
 
-    const { success, fieldErrors, message } = await handleApiCall(
-      "http://localhost:5000/auth/register",
+    registerMutation.mutate(
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      },
+      {
+        onSuccess: () => {
+          // Success - redirect to verify email
+          const emailParam = encodeURIComponent(
+            formData.email.toLowerCase().trim(),
+          );
+          router.push(`/verify-email?email=${emailParam}`);
         },
-        body: JSON.stringify({
-          name: formData.name.trim(),
-          email: formData.email.toLowerCase().trim(),
-          password: formData.password,
-        }),
-      },
-      (data) => {
-        // Success - redirect to verify email
-        const emailParam = encodeURIComponent(
-          formData.email.toLowerCase().trim(),
-        );
-        router.push(`/verify-email?email=${emailParam}`);
-      },
-      (errorMessage, backendFieldErrors) => {
-        setGeneralError(errorMessage);
-        setErrors(backendFieldErrors);
+        onError: (error) => {
+          setGeneralError(error.message);
+          if (error.fieldErrors) {
+            setErrors(error.fieldErrors);
+          }
+        },
       },
     );
-
-    setIsLoading(false);
   };
 
   const passwordRequirements = getPasswordRequirements(formData.password);
@@ -111,7 +103,7 @@ export default function RegisterPage() {
           placeholder="Enter your name"
           autoComplete="name"
           error={touched.name ? errors.name : ""}
-          disabled={isLoading}
+          disabled={registerMutation.isPending}
         />
 
         <Input
@@ -125,7 +117,7 @@ export default function RegisterPage() {
           placeholder="Enter your email"
           autoComplete="email"
           error={touched.email ? errors.email : ""}
-          disabled={isLoading}
+          disabled={registerMutation.isPending}
         />
 
         <PasswordInput
@@ -138,7 +130,7 @@ export default function RegisterPage() {
           placeholder="Create a password"
           autoComplete="new-password"
           error={touched.password ? errors.password : ""}
-          disabled={isLoading}
+          disabled={registerMutation.isPending}
           showRequirements={formData.password.length > 0}
           requirements={passwordRequirements}
         />
@@ -153,10 +145,13 @@ export default function RegisterPage() {
           placeholder="Confirm your password"
           autoComplete="new-password"
           error={touched.confirmPassword ? errors.confirmPassword : ""}
-          disabled={isLoading}
+          disabled={registerMutation.isPending}
         />
 
-        <SubmitButton isLoading={isLoading} loadingText="Registering...">
+        <SubmitButton
+          isLoading={registerMutation.isPending}
+          loadingText="Registering..."
+        >
           Register
         </SubmitButton>
       </form>

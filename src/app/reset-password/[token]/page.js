@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useForm } from "../../../hooks/useForm";
-import { useAuthApi } from "../../../hooks/useAuthApi";
+import { useResetPassword } from "../../../hooks/queries/auth";
 import PasswordInput from "../../../components/PasswordInput";
 import FormError from "../../../components/FormError";
 import AuthLayout from "../../../components/auth/AuthLayout";
@@ -20,16 +20,15 @@ export default function ResetPasswordPage() {
   const router = useRouter();
   const params = useParams();
   const token = params.token;
-  const { handleApiCall } = useAuthApi();
+  const resetPasswordMutation = useResetPassword();
 
   const {
     formData,
     errors,
+    setErrors,
     touched,
     generalError,
     setGeneralError,
-    isLoading,
-    setIsLoading,
     handleChange,
     handleBlur,
     validateForm,
@@ -56,36 +55,31 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    setIsLoading(true);
     setGeneralError("");
     setSuccessMessage("");
 
-    const { success, message } = await handleApiCall(
-      "http://localhost:5000/auth/reset-password",
+    resetPasswordMutation.mutate(
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+        token: token,
+        password: formData.password,
+      },
+      {
+        onSuccess: () => {
+          setSuccessMessage(
+            "Password reset successfully! Redirecting to login...",
+          );
+          setTimeout(() => {
+            router.push("/login");
+          }, 2000);
         },
-        body: JSON.stringify({
-          token: token,
-          password: formData.password,
-        }),
-      },
-      (data) => {
-        setSuccessMessage(
-          "Password reset successfully! Redirecting to login...",
-        );
-        setTimeout(() => {
-          router.push("/login");
-        }, 2000);
-      },
-      (errorMessage, backendFieldErrors) => {
-        setGeneralError(errorMessage);
+        onError: (error) => {
+          setGeneralError(error.message);
+          if (error.fieldErrors) {
+            setErrors(error.fieldErrors);
+          }
+        },
       },
     );
-
-    setIsLoading(false);
   };
 
   const passwordRequirements = getPasswordRequirements(formData.password);
@@ -118,7 +112,7 @@ export default function ResetPasswordPage() {
           placeholder="Create a new password"
           autoComplete="new-password"
           error={touched.password ? errors.password : ""}
-          disabled={isLoading}
+          disabled={resetPasswordMutation.isPending}
           showRequirements={formData.password.length > 0}
           requirements={passwordRequirements}
         />
@@ -133,10 +127,13 @@ export default function ResetPasswordPage() {
           placeholder="Confirm your new password"
           autoComplete="new-password"
           error={touched.confirmPassword ? errors.confirmPassword : ""}
-          disabled={isLoading}
+          disabled={resetPasswordMutation.isPending}
         />
 
-        <SubmitButton isLoading={isLoading} loadingText="Resetting...">
+        <SubmitButton
+          isLoading={resetPasswordMutation.isPending}
+          loadingText="Resetting..."
+        >
           Reset password
         </SubmitButton>
       </form>

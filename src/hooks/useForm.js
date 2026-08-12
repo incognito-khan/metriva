@@ -5,7 +5,6 @@ export const useForm = (initialValues, validationSchema = {}) => {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [generalError, setGeneralError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -76,7 +75,6 @@ export const useForm = (initialValues, validationSchema = {}) => {
     setErrors({});
     setTouched({});
     setGeneralError("");
-    setIsLoading(false);
   };
 
   return {
@@ -88,8 +86,6 @@ export const useForm = (initialValues, validationSchema = {}) => {
     setTouched,
     generalError,
     setGeneralError,
-    isLoading,
-    setIsLoading,
     handleChange,
     handleCustomChange,
     handleBlur,
