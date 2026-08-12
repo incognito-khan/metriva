@@ -2,6 +2,7 @@ const User = require("../models/User");
 const {
   generateAccessToken,
   generateRefreshToken,
+  verifyRefreshToken,
 } = require("../utils/tokens");
 const config = require("../config/env");
 
@@ -123,7 +124,59 @@ const login = async (req, res, next) => {
   }
 };
 
+// Refresh access token
+const refresh = async (req, res, next) => {
+  try {
+    // Read refresh token from HttpOnly cookie
+    const refreshToken = req.cookies.refreshToken;
+
+    // If refresh token is missing, return 401 Unauthorized
+    if (!refreshToken) {
+      return res.status(401).json({
+        success: false,
+        message: "Refresh token required",
+      });
+    }
+
+    // Verify the refresh token using the existing utility
+    const decoded = verifyRefreshToken(refreshToken);
+
+    // Extract user ID from the token's sub claim
+    const userId = decoded.sub;
+
+    // Generate a new access token using the existing utility
+    const newAccessToken = generateAccessToken(userId);
+
+    // Determine cookie settings based on environment
+    const isProduction = config.nodeEnv === "production";
+    const baseCookieOptions = {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "strict" : "lax",
+    };
+
+    // Set the new access token in the HttpOnly cookie (15 minutes)
+    res.cookie("accessToken", newAccessToken, {
+      ...baseCookieOptions,
+      maxAge: 15 * 60 * 1000, // 15 minutes in milliseconds
+    });
+
+    // Return minimal success response - token is NOT in JSON response
+    res.status(200).json({
+      success: true,
+      message: "Access token refreshed successfully",
+    });
+  } catch (error) {
+    // Invalid, malformed, expired, or incorrectly signed refresh tokens result in 401
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired refresh token",
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
+  refresh,
 };

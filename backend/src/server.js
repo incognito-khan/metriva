@@ -1,9 +1,11 @@
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const config = require("./config/env");
 const connectDatabase = require("./config/database");
 const errorHandler = require("./middleware/errorHandler");
 const authRoutes = require("./routes/auth");
+const authenticate = require("./middleware/auth");
 
 const app = express();
 
@@ -13,6 +15,7 @@ connectDatabase();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // CORS Configuration
 const corsOptions = {
@@ -44,6 +47,15 @@ app.use(cors(corsOptions));
 
 // API Routes
 app.use("/api/auth", authRoutes);
+
+// Protected test route for middleware demonstration
+app.get("/api/protected", authenticate, (req, res) => {
+  res.json({
+    success: true,
+    message: "Access granted to protected resource",
+    user: req.user,
+  });
+});
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
