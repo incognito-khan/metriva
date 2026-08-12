@@ -93,6 +93,14 @@ const login = async (req, res, next) => {
       });
     }
 
+    // Check if email is verified
+    if (!user.emailVerified) {
+      return res.status(403).json({
+        success: false,
+        message: "Please verify your email before logging in.",
+      });
+    }
+
     // Generate access and refresh tokens
     const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
