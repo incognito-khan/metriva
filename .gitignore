@@ -40,6 +40,11 @@ yarn-error.log*
 /backend/dist
 /backend/build
 
+# Frontend env files (should be ignored)
+.env.local
+.env.production
+.env.development
+
 # env files (can opt-in for committing if needed)
 !.env.example
 
