@@ -5,3 +5,4 @@ export { useLogin } from "./useLogin";
 export { useLogout } from "./useLogout";
 export { useForgotPassword } from "./useForgotPassword";
 export { useResetPassword } from "./useResetPassword";
+export { useCurrentUser } from "./useCurrentUser";

@@ -1,5 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authApi } from "../../../lib/api/auth";
+import { authQueryKeys } from "../../../lib/api/queryKeys";
 import { mapBackendErrors } from "../../../lib/validation";
 
 /**
@@ -8,10 +9,12 @@ import { mapBackendErrors } from "../../../lib/validation";
  * On success, backend sets HttpOnly cookies and establishes session
  */
 export const useLogin = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async ({ email, password }) => {
       const response = await authApi.login(email, password);
-      
+
       if (!response.success) {
         // Handle field-specific errors
         if (response.errors && response.errors.length > 0) {
@@ -27,8 +30,12 @@ export const useLogin = () => {
           fieldErrors: {},
         };
       }
-      
+
       return response;
+    },
+    onSuccess: () => {
+      // Invalidate and refetch current user after successful login
+      queryClient.invalidateQueries({ queryKey: authQueryKeys.currentUser });
     },
   });
 };

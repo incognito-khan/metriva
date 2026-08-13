@@ -98,4 +98,14 @@ export const authApi = {
       }),
     });
   },
+
+  /**
+   * Get current authenticated user
+   * GET /auth/me
+   */
+  getCurrentUser: async () => {
+    return apiClient("/auth/me", {
+      method: "GET",
+    });
+  },
 };

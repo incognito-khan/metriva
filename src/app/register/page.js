@@ -10,6 +10,7 @@ import AuthLayout from "../../components/auth/AuthLayout";
 import AuthHeader from "../../components/auth/AuthHeader";
 import SubmitButton from "../../components/auth/SubmitButton";
 import AuthFooter from "../../components/auth/AuthFooter";
+import GuestRoute from "../../components/auth/GuestRoute";
 import {
   validateName,
   validateEmail,
@@ -86,81 +87,86 @@ export default function RegisterPage() {
   const passwordRequirements = getPasswordRequirements(formData.password);
 
   return (
-    <AuthLayout>
-      <AuthHeader title="Create an account" subtitle="Sign up to get started" />
-
-      <FormError error={generalError} />
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <Input
-          label="Name"
-          type="text"
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          onBlur={() => handleBlur("name")}
-          placeholder="Enter your name"
-          autoComplete="name"
-          error={touched.name ? errors.name : ""}
-          disabled={registerMutation.isPending}
+    <GuestRoute>
+      <AuthLayout>
+        <AuthHeader
+          title="Create an account"
+          subtitle="Sign up to get started"
         />
 
-        <Input
-          label="Email"
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          onBlur={() => handleBlur("email")}
-          placeholder="Enter your email"
-          autoComplete="email"
-          error={touched.email ? errors.email : ""}
-          disabled={registerMutation.isPending}
+        <FormError error={generalError} />
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <Input
+            label="Name"
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            onBlur={() => handleBlur("name")}
+            placeholder="Enter your name"
+            autoComplete="name"
+            error={touched.name ? errors.name : ""}
+            disabled={registerMutation.isPending}
+          />
+
+          <Input
+            label="Email"
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            onBlur={() => handleBlur("email")}
+            placeholder="Enter your email"
+            autoComplete="email"
+            error={touched.email ? errors.email : ""}
+            disabled={registerMutation.isPending}
+          />
+
+          <PasswordInput
+            label="Password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            onBlur={() => handleBlur("password")}
+            placeholder="Create a password"
+            autoComplete="new-password"
+            error={touched.password ? errors.password : ""}
+            disabled={registerMutation.isPending}
+            showRequirements={formData.password.length > 0}
+            requirements={passwordRequirements}
+          />
+
+          <PasswordInput
+            label="Confirm Password"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            onBlur={() => handleBlur("confirmPassword")}
+            placeholder="Confirm your password"
+            autoComplete="new-password"
+            error={touched.confirmPassword ? errors.confirmPassword : ""}
+            disabled={registerMutation.isPending}
+          />
+
+          <SubmitButton
+            isLoading={registerMutation.isPending}
+            loadingText="Registering..."
+          >
+            Register
+          </SubmitButton>
+        </form>
+
+        <AuthFooter
+          text="Already have an account?"
+          linkText="Sign in"
+          linkHref="/login"
         />
-
-        <PasswordInput
-          label="Password"
-          id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          onBlur={() => handleBlur("password")}
-          placeholder="Create a password"
-          autoComplete="new-password"
-          error={touched.password ? errors.password : ""}
-          disabled={registerMutation.isPending}
-          showRequirements={formData.password.length > 0}
-          requirements={passwordRequirements}
-        />
-
-        <PasswordInput
-          label="Confirm Password"
-          id="confirmPassword"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          onBlur={() => handleBlur("confirmPassword")}
-          placeholder="Confirm your password"
-          autoComplete="new-password"
-          error={touched.confirmPassword ? errors.confirmPassword : ""}
-          disabled={registerMutation.isPending}
-        />
-
-        <SubmitButton
-          isLoading={registerMutation.isPending}
-          loadingText="Registering..."
-        >
-          Register
-        </SubmitButton>
-      </form>
-
-      <AuthFooter
-        text="Already have an account?"
-        linkText="Sign in"
-        linkHref="/login"
-      />
-    </AuthLayout>
+      </AuthLayout>
+    </GuestRoute>
   );
 }

@@ -12,6 +12,7 @@ import SubmitButton from "../../components/auth/SubmitButton";
 import SecondaryButton from "../../components/auth/SecondaryButton";
 import AuthFooter from "../../components/auth/AuthFooter";
 import SuccessState from "../../components/auth/SuccessState";
+import GuestRoute from "../../components/auth/GuestRoute";
 import { validateEmail } from "../../lib/validation";
 
 export default function ForgotPasswordPage() {
@@ -76,56 +77,60 @@ export default function ForgotPasswordPage() {
 
   if (isSubmitted) {
     return (
-      <AuthLayout>
-        <SuccessState
-          title="Check your email"
-          message="If an account exists with this email, a password reset link has been sent."
-          actionText="Try another email"
-          onAction={handleTryAnother}
-          secondaryActionText="Back to sign in"
-          secondaryAction={() => router.push("/login")}
-        />
-      </AuthLayout>
+      <GuestRoute>
+        <AuthLayout>
+          <SuccessState
+            title="Check your email"
+            message="If an account exists with this email, a password reset link has been sent."
+            actionText="Try another email"
+            onAction={handleTryAnother}
+            secondaryActionText="Back to sign in"
+            secondaryAction={() => router.push("/login")}
+          />
+        </AuthLayout>
+      </GuestRoute>
     );
   }
 
   return (
-    <AuthLayout>
-      <AuthHeader
-        title="Forgot password?"
-        subtitle="Enter your email to receive a reset link"
-      />
-
-      <FormError error={generalError} />
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <Input
-          label="Email"
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          onBlur={() => handleBlur("email")}
-          placeholder="Enter your email"
-          autoComplete="email"
-          error={touched.email ? errors.email : ""}
-          disabled={forgotPasswordMutation.isPending}
+    <GuestRoute>
+      <AuthLayout>
+        <AuthHeader
+          title="Forgot password?"
+          subtitle="Enter your email to receive a reset link"
         />
 
-        <SubmitButton
-          isLoading={forgotPasswordMutation.isPending}
-          loadingText="Sending..."
-        >
-          Send reset link
-        </SubmitButton>
-      </form>
+        <FormError error={generalError} />
 
-      <AuthFooter
-        text="Remember your password?"
-        linkText="Sign in"
-        linkHref="/login"
-      />
-    </AuthLayout>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <Input
+            label="Email"
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            onBlur={() => handleBlur("email")}
+            placeholder="Enter your email"
+            autoComplete="email"
+            error={touched.email ? errors.email : ""}
+            disabled={forgotPasswordMutation.isPending}
+          />
+
+          <SubmitButton
+            isLoading={forgotPasswordMutation.isPending}
+            loadingText="Sending..."
+          >
+            Send reset link
+          </SubmitButton>
+        </form>
+
+        <AuthFooter
+          text="Remember your password?"
+          linkText="Sign in"
+          linkHref="/login"
+        />
+      </AuthLayout>
+    </GuestRoute>
   );
 }

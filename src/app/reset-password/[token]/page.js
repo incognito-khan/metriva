@@ -10,6 +10,7 @@ import AuthLayout from "../../../components/auth/AuthLayout";
 import AuthHeader from "../../../components/auth/AuthHeader";
 import SubmitButton from "../../../components/auth/SubmitButton";
 import AuthFooter from "../../../components/auth/AuthFooter";
+import GuestRoute from "../../../components/auth/GuestRoute";
 import {
   validatePassword,
   validateConfirmPassword,
@@ -85,64 +86,66 @@ export default function ResetPasswordPage() {
   const passwordRequirements = getPasswordRequirements(formData.password);
 
   return (
-    <AuthLayout>
-      <AuthHeader
-        title="Reset your password"
-        subtitle="Create a new secure password"
-      />
-
-      <FormError error={generalError} />
-
-      {successMessage && (
-        <div className="mb-6 p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
-          <p className="text-sm text-green-800 dark:text-green-200">
-            {successMessage}
-          </p>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <PasswordInput
-          label="New Password"
-          id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          onBlur={() => handleBlur("password")}
-          placeholder="Create a new password"
-          autoComplete="new-password"
-          error={touched.password ? errors.password : ""}
-          disabled={resetPasswordMutation.isPending}
-          showRequirements={formData.password.length > 0}
-          requirements={passwordRequirements}
+    <GuestRoute>
+      <AuthLayout>
+        <AuthHeader
+          title="Reset your password"
+          subtitle="Create a new secure password"
         />
 
-        <PasswordInput
-          label="Confirm New Password"
-          id="confirmPassword"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          onBlur={() => handleBlur("confirmPassword")}
-          placeholder="Confirm your new password"
-          autoComplete="new-password"
-          error={touched.confirmPassword ? errors.confirmPassword : ""}
-          disabled={resetPasswordMutation.isPending}
+        <FormError error={generalError} />
+
+        {successMessage && (
+          <div className="mb-6 p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
+            <p className="text-sm text-green-800 dark:text-green-200">
+              {successMessage}
+            </p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <PasswordInput
+            label="New Password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            onBlur={() => handleBlur("password")}
+            placeholder="Create a new password"
+            autoComplete="new-password"
+            error={touched.password ? errors.password : ""}
+            disabled={resetPasswordMutation.isPending}
+            showRequirements={formData.password.length > 0}
+            requirements={passwordRequirements}
+          />
+
+          <PasswordInput
+            label="Confirm New Password"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            onBlur={() => handleBlur("confirmPassword")}
+            placeholder="Confirm your new password"
+            autoComplete="new-password"
+            error={touched.confirmPassword ? errors.confirmPassword : ""}
+            disabled={resetPasswordMutation.isPending}
+          />
+
+          <SubmitButton
+            isLoading={resetPasswordMutation.isPending}
+            loadingText="Resetting..."
+          >
+            Reset password
+          </SubmitButton>
+        </form>
+
+        <AuthFooter
+          text="Remember your password?"
+          linkText="Sign in"
+          linkHref="/login"
         />
-
-        <SubmitButton
-          isLoading={resetPasswordMutation.isPending}
-          loadingText="Resetting..."
-        >
-          Reset password
-        </SubmitButton>
-      </form>
-
-      <AuthFooter
-        text="Remember your password?"
-        linkText="Sign in"
-        linkHref="/login"
-      />
-    </AuthLayout>
+      </AuthLayout>
+    </GuestRoute>
   );
 }

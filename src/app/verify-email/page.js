@@ -12,6 +12,7 @@ import AuthHeader from "../../components/auth/AuthHeader";
 import SubmitButton from "../../components/auth/SubmitButton";
 import SecondaryButton from "../../components/auth/SecondaryButton";
 import AuthFooter from "../../components/auth/AuthFooter";
+import GuestRoute from "../../components/auth/GuestRoute";
 import { validateEmail, validateOTP } from "../../lib/validation";
 
 function VerifyEmailForm() {
@@ -122,71 +123,77 @@ function VerifyEmailForm() {
   };
 
   return (
-    <AuthLayout>
-      <AuthHeader
-        title="Verify your email"
-        subtitle="Enter the 6-digit code sent to your email"
-      />
-
-      <FormError error={generalError} />
-
-      {successMessage && (
-        <div className="mb-6 p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
-          <p className="text-sm text-green-800 dark:text-green-200">
-            {successMessage}
-          </p>
-        </div>
-      )}
-
-      <form onSubmit={handleVerify} className="space-y-6">
-        <Input
-          label="Email"
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={(e) => handleCustomChange("email", e.target.value)}
-          onBlur={() => handleBlur("email")}
-          placeholder="Enter your email"
-          autoComplete="email"
-          error={touched.email ? errors.email : ""}
-          disabled={verifyOtpMutation.isPending || resendOtpMutation.isPending}
+    <GuestRoute>
+      <AuthLayout>
+        <AuthHeader
+          title="Verify your email"
+          subtitle="Enter the 6-digit code sent to your email"
         />
 
-        <OTPInput
-          label="Verification Code"
-          id="otp"
-          name="otp"
-          value={formData.otp}
-          onChange={(value) => handleCustomChange("otp", value)}
-          error={touched.otp ? errors.otp : ""}
-          disabled={verifyOtpMutation.isPending || resendOtpMutation.isPending}
-          length={6}
+        <FormError error={generalError} />
+
+        {successMessage && (
+          <div className="mb-6 p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
+            <p className="text-sm text-green-800 dark:text-green-200">
+              {successMessage}
+            </p>
+          </div>
+        )}
+
+        <form onSubmit={handleVerify} className="space-y-6">
+          <Input
+            label="Email"
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={(e) => handleCustomChange("email", e.target.value)}
+            onBlur={() => handleBlur("email")}
+            placeholder="Enter your email"
+            autoComplete="email"
+            error={touched.email ? errors.email : ""}
+            disabled={
+              verifyOtpMutation.isPending || resendOtpMutation.isPending
+            }
+          />
+
+          <OTPInput
+            label="Verification Code"
+            id="otp"
+            name="otp"
+            value={formData.otp}
+            onChange={(value) => handleCustomChange("otp", value)}
+            error={touched.otp ? errors.otp : ""}
+            disabled={
+              verifyOtpMutation.isPending || resendOtpMutation.isPending
+            }
+            length={6}
+          />
+
+          <SubmitButton
+            isLoading={verifyOtpMutation.isPending}
+            loadingText="Verifying..."
+          >
+            Verify Email
+          </SubmitButton>
+
+          <SecondaryButton
+            onClick={handleResendOTP}
+            isLoading={resendOtpMutation.isPending}
+            loadingText="Sending..."
+            disabled={verifyOtpMutation.isPending}
+          >
+            Resend verification code
+          </SecondaryButton>
+        </form>
+
+        <AuthFooter
+          text="Already verified?"
+          linkText="Sign in"
+          linkHref="/login"
         />
-
-        <SubmitButton
-          isLoading={verifyOtpMutation.isPending}
-          loadingText="Verifying..."
-        >
-          Verify Email
-        </SubmitButton>
-
-        <SecondaryButton
-          onClick={handleResendOTP}
-          isLoading={resendOtpMutation.isPending}
-          loadingText="Sending..."
-          disabled={verifyOtpMutation.isPending}
-        >
-          Resend verification code
-        </SecondaryButton>
-      </form>
-
-      <AuthFooter
-        text="Already verified?"
-        linkText="Sign in"
-        linkHref="/login"
-      />
-    </AuthLayout>
+      </AuthLayout>
+    </GuestRoute>
   );
 }
 
