@@ -9,19 +9,24 @@ import { useAuth } from "../../contexts/AuthContext";
  * Redirects authenticated users to /dashboard
  * Handles loading state to prevent redirect flickering
  */
+
+// TEMP BYPASS - Dev mode (original code commented below)
+// TODO: Restore before production
+export default function GuestRoute({ children }) {
+  return <>{children}</>;
+}
+
+/*
 export default function GuestRoute({ children }) {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    // Only redirect when we know the user is authenticated
-    // Don't redirect while still loading to avoid flickering
     if (isAuthenticated && !isLoading) {
       router.push("/dashboard");
     }
   }, [isAuthenticated, isLoading, router]);
 
-  // Show loading state while checking authentication
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-black">
@@ -30,12 +35,10 @@ export default function GuestRoute({ children }) {
     );
   }
 
-  // Don't render children if user is authenticated
-  // (they will be redirected by the useEffect)
   if (isAuthenticated) {
     return null;
   }
 
-  // User is not authenticated, render children
   return <>{children}</>;
 }
+*/
