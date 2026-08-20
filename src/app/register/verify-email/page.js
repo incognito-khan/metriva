@@ -2,18 +2,18 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useForm } from "../../hooks/useForm";
-import { useVerifyOtp, useResendOtp } from "../../hooks/queries/auth";
-import Input from "../../components/Input";
-import OTPInput from "../../components/OTPInput";
-import FormError from "../../components/FormError";
-import AuthLayout from "../../components/auth/AuthLayout";
-import AuthHeader from "../../components/auth/AuthHeader";
-import SubmitButton from "../../components/auth/SubmitButton";
-import SecondaryButton from "../../components/auth/SecondaryButton";
-import AuthFooter from "../../components/auth/AuthFooter";
-import GuestRoute from "../../components/auth/GuestRoute";
-import { validateEmail, validateOTP } from "../../lib/validation";
+import { useForm } from "../../../hooks/useForm";
+import { useVerifyOtp, useResendOtp } from "../../../hooks/queries/auth";
+import Input from "../../../components/Input";
+import OTPInput from "../../../components/OTPInput";
+import FormError from "../../../components/FormError";
+import AuthLayout from "../../../components/auth/AuthLayout";
+import AuthHeader from "../../../components/auth/AuthHeader";
+import SubmitButton from "../../../components/auth/SubmitButton";
+import SecondaryButton from "../../../components/auth/SecondaryButton";
+import AuthFooter from "../../../components/auth/AuthFooter";
+import GuestRoute from "../../../components/auth/GuestRoute";
+import { validateEmail, validateOTP } from "../../../lib/validation";
 
 function VerifyEmailForm() {
   const router = useRouter();
