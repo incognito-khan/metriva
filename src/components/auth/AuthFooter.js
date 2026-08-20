@@ -4,6 +4,7 @@ const AuthFooter = ({
   text,
   linkText,
   linkHref,
+  linkClassName = "",
   secondaryLink,
   className = "",
 }) => {
@@ -13,7 +14,7 @@ const AuthFooter = ({
     >
       {text && (
         <p>
-          {text} <AuthLink href={linkHref}>{linkText}</AuthLink>
+          {text} <AuthLink href={linkHref} className={linkClassName}>{linkText}</AuthLink>
         </p>
       )}
       {secondaryLink && (
