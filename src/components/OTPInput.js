@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useMemo } from "react";
 
 const OTPInput = ({
   label,
@@ -13,12 +13,8 @@ const OTPInput = ({
   length = 6,
   className = "",
 }) => {
-  const [otp, setOtp] = useState(value.split("").slice(0, length));
+  const otp = useMemo(() => value.split("").slice(0, length), [value, length]);
   const inputRefs = useRef([]);
-
-  useEffect(() => {
-    setOtp(value.split("").slice(0, length));
-  }, [value, length]);
 
   const handleChange = (index, e) => {
     const newValue = e.target.value;
@@ -30,7 +26,6 @@ const OTPInput = ({
 
     const newOtp = [...otp];
     newOtp[index] = newValue.slice(-1); // Take only the last character
-    setOtp(newOtp);
 
     // Move to next input if value is entered
     if (newValue && index < length - 1) {
@@ -75,7 +70,6 @@ const OTPInput = ({
       }
     });
 
-    setOtp(newOtp);
     onChange(newOtp.join(""));
 
     // Focus the next empty input or the last filled input

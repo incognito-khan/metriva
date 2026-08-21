@@ -101,20 +101,20 @@ const NextIcon = () => (
 
 export default function ClientsTable() {
   return (
-    <div className="bg-white rounded-[18px] border border-zinc-200 overflow-hidden">
+    <div className="bg-white rounded-[18px] border border-zinc-200 overflow-x-auto">
       {/* Header */}
-      <div className="flex justify-between items-center px-8 py-[26px]">
-        <h2 className="text-[22px] font-extrabold text-[#0f172a]">Clients</h2>
-        <div className="flex gap-3">
-          <div className="flex items-center gap-2 border border-zinc-200 rounded-[10px] px-4 py-[11px] w-[260px] text-zinc-400 text-sm">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-5 md:px-8 py-5 md:py-[26px]">
+        <h2 className="text-[18px] md:text-[22px] font-extrabold text-[#0f172a]">Clients</h2>
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-2 border border-zinc-200 rounded-[10px] px-4 py-[11px] w-full sm:w-[260px] text-zinc-400 text-sm">
             <SearchIcon />
             Search clients...
           </div>
-          <button className="flex items-center gap-5 border border-zinc-200 rounded-[10px] px-4 py-[11px] text-[#334155] text-sm font-semibold cursor-pointer hover:bg-zinc-50 transition-colors whitespace-nowrap">
+          <button className="flex items-center justify-between gap-5 border border-zinc-200 rounded-[10px] px-4 py-[11px] text-[#334155] text-sm font-semibold cursor-pointer hover:bg-zinc-50 transition-colors whitespace-nowrap">
             Category
             <ChevronDown />
           </button>
-          <Link href="/dashboard/clients/add" className="flex items-center gap-2 bg-[#4f46e5] hover:bg-[#4338ca] text-white px-5 py-3 rounded-[10px] text-[14.5px] font-semibold cursor-pointer transition-colors whitespace-nowrap no-underline">
+          <Link href="/agencies/clients/add" className="flex items-center justify-center gap-2 bg-[#4f46e5] hover:bg-[#4338ca] text-white px-5 py-3 rounded-[10px] text-[14.5px] font-semibold cursor-pointer transition-colors whitespace-nowrap no-underline">
             <PlusIcon />
             Add Client
           </Link>
@@ -125,42 +125,42 @@ export default function ClientsTable() {
       <table className="w-full border-collapse">
         <thead>
           <tr className="bg-[#eef1fb]">
-            <th className="text-left px-8 py-4 text-xs font-bold text-[#334155] tracking-wider uppercase">Business Name</th>
-            <th className="text-left px-8 py-4 text-xs font-bold text-[#334155] tracking-wider uppercase">Website</th>
-            <th className="text-left px-8 py-4 text-xs font-bold text-[#334155] tracking-wider uppercase">Category</th>
-            <th className="text-left px-8 py-4 text-xs font-bold text-[#334155] tracking-wider uppercase">Location</th>
-            <th className="text-left px-8 py-4 text-xs font-bold text-[#334155] tracking-wider uppercase">Status</th>
-            <th className="text-left px-8 py-4 text-xs font-bold text-[#334155] tracking-wider uppercase">Actions</th>
+            <th className="text-left px-5 md:px-8 py-4 text-xs font-bold text-[#334155] tracking-wider uppercase">Business Name</th>
+            <th className="text-left px-5 md:px-8 py-4 text-xs font-bold text-[#334155] tracking-wider uppercase hidden md:table-cell">Website</th>
+            <th className="text-left px-5 md:px-8 py-4 text-xs font-bold text-[#334155] tracking-wider uppercase hidden lg:table-cell">Category</th>
+            <th className="text-left px-5 md:px-8 py-4 text-xs font-bold text-[#334155] tracking-wider uppercase hidden lg:table-cell">Location</th>
+            <th className="text-left px-5 md:px-8 py-4 text-xs font-bold text-[#334155] tracking-wider uppercase">Status</th>
+            <th className="text-left px-5 md:px-8 py-4 text-xs font-bold text-[#334155] tracking-wider uppercase">Actions</th>
           </tr>
         </thead>
         <tbody>
           {clients.map((client, i) => (
             <tr key={i} className="border-t border-[#f0f1f5]">
               {/* Business Name */}
-              <td className="px-8 py-5">
+              <td className="px-5 md:px-8 py-4 md:py-5">
                 <div className="flex items-center gap-3.5">
                   <div className="w-9 h-9 rounded-[9px] bg-[#e5e2fb] text-[#4f46e5] flex items-center justify-center flex-shrink-0">
                     <BuildingIcon />
                   </div>
-                  <div className="font-bold text-[15px] text-[#0f172a]">{client.name}</div>
+                  <div className="font-bold text-[14px] md:text-[15px] text-[#0f172a]">{client.name}</div>
                 </div>
               </td>
 
               {/* Website */}
-              <td className="px-8 py-5">
+              <td className="px-5 md:px-8 py-4 md:py-5 hidden md:table-cell">
                 <a href="#" className="text-[#4f46e5] font-medium hover:underline">{client.website}</a>
               </td>
 
               {/* Category */}
-              <td className="px-8 py-5 text-[#334155]">{client.category}</td>
+              <td className="px-5 md:px-8 py-4 md:py-5 text-[#334155] hidden lg:table-cell">{client.category}</td>
 
               {/* Location */}
-              <td className="px-8 py-5 text-[#334155]">{client.location}</td>
+              <td className="px-5 md:px-8 py-4 md:py-5 text-[#334155] hidden lg:table-cell">{client.location}</td>
 
               {/* Status */}
-              <td className="px-8 py-5">
+              <td className="px-5 md:px-8 py-4 md:py-5">
                 <span
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-[6px] rounded-full text-[13.5px] font-bold ${
+                  className={`inline-flex items-center gap-1.5 px-3 py-[5px] rounded-full text-[12.5px] md:text-[13.5px] font-bold ${
                     client.status === "Active"
                       ? "bg-[#dcfce7] text-[#16a34a]"
                       : "bg-[#eef1fb] text-[#64748b]"
@@ -171,7 +171,7 @@ export default function ClientsTable() {
               </td>
 
               {/* Actions */}
-              <td className="px-8 py-5 text-zinc-400 cursor-pointer hover:text-zinc-600">
+              <td className="px-5 md:px-8 py-4 md:py-5 text-zinc-400 cursor-pointer hover:text-zinc-600">
                 <ThreeDots />
               </td>
             </tr>
@@ -180,8 +180,8 @@ export default function ClientsTable() {
       </table>
 
       {/* Footer */}
-      <div className="flex items-center justify-between px-8 py-5">
-        <div className="text-[14.5px] text-[#475569]">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-5 md:px-8 py-4 md:py-5">
+        <div className="text-[13px] md:text-[14.5px] text-[#475569]">
           Showing 1 to 6 of 148 results
         </div>
         <div className="flex items-center gap-2">

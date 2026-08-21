@@ -52,10 +52,10 @@ export default function LineChart({ data = [], labels = [] }) {
   });
 
   return (
-    <div className="bg-white rounded-xl border border-zinc-200 p-5 h-full flex flex-col">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-white rounded-xl border border-zinc-200 p-4 md:p-5 h-full flex flex-col">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div>
-          <h3 className="text-base font-semibold text-zinc-900">Local Search Visibility</h3>
+          <h3 className="text-sm md:text-base font-semibold text-zinc-900">Local Search Visibility</h3>
           <p className="text-xs text-zinc-500 mt-0.5">Aggregate visibility across all client portfolios</p>
         </div>
         <div className="flex items-center gap-1 bg-zinc-100 rounded-lg p-1">

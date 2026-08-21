@@ -15,14 +15,14 @@ export default function AddClientPage() {
         <Sidebar />
         <div className="lg:ml-60 flex flex-col min-h-screen bg-[#f4f6fb]">
           <TopBar breadcrumb="SEO Performance" searchPlaceholder="Search reports..." />
-          <main className="px-10 py-10 flex-1 max-w-[1200px]">
+          <main className="px-5 md:px-10 py-6 md:py-10 flex-1 max-w-[1200px]">
             {/* Page Header */}
-            <div className="flex justify-between items-start mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6 md:mb-8">
               <div>
-                <h1 className="text-[34px] font-extrabold text-[#0f172a] mb-2.5 tracking-[-0.5px]">
+                <h1 className="text-[26px] md:text-[34px] font-extrabold text-[#0f172a] mb-2 tracking-[-0.5px]">
                   Add New Client
                 </h1>
-                <p className="text-[15.5px] text-[#64748b]">
+                <p className="text-[14px] md:text-[15.5px] text-[#64748b]">
                   Register a new client profile and set up their business details.
                 </p>
               </div>
@@ -40,7 +40,7 @@ export default function AddClientPage() {
             </div>
 
             {/* Form Panel */}
-            <div className="bg-white rounded-[20px] border border-zinc-200 px-11 py-10">
+            <div className="bg-white rounded-[20px] border border-zinc-200 px-5 md:px-11 py-7 md:py-10">
               {/* Section: Business Information */}
               <div className="flex items-center gap-3 text-[22px] font-extrabold text-[#0f172a] mb-7">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -51,7 +51,7 @@ export default function AddClientPage() {
               </div>
 
               <div className="mb-6">
-                <label className="text-[15px] font-semibold text-[#1e293b] mb-2 block">
+                <label className="text-[14px] md:text-[15px] font-semibold text-[#1e293b] mb-2 block">
                   Business Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -61,9 +61,9 @@ export default function AddClientPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-5 md:mb-6">
                 <div>
-                  <label className="text-[15px] font-semibold text-[#1e293b] mb-2 block">Business Category</label>
+                  <label className="text-[14px] md:text-[15px] font-semibold text-[#1e293b] mb-2 block">Business Category</label>
                   <div className="relative">
                     <select className="w-full appearance-none bg-[#eef1fb] border border-[#e2e6f5] rounded-[10px] px-4 py-3.5 text-[15px] text-[#0f172a] font-[inherit] cursor-pointer focus:outline-2 focus:outline-[#4f46e5] focus:outline-offset-1">
                       <option>Select category...</option>
@@ -78,7 +78,7 @@ export default function AddClientPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-[15px] font-semibold text-[#1e293b] mb-2 block">Website</label>
+                  <label className="text-[14px] md:text-[15px] font-semibold text-[#1e293b] mb-2 block">Website</label>
                   <input
                     type="text"
                     placeholder="https://example.com"
@@ -101,9 +101,9 @@ export default function AddClientPage() {
                 Contact & Location
               </div>
 
-              <div className="grid grid-cols-2 gap-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-5 md:mb-6">
                 <div>
-                  <label className="text-[15px] font-semibold text-[#1e293b] mb-2 block">
+                  <label className="text-[14px] md:text-[15px] font-semibold text-[#1e293b] mb-2 block">
                     Primary Email <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -119,7 +119,7 @@ export default function AddClientPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-[15px] font-semibold text-[#1e293b] mb-2 block">Phone Number</label>
+                  <label className="text-[14px] md:text-[15px] font-semibold text-[#1e293b] mb-2 block">Phone Number</label>
                   <div className="relative">
                     <svg className="absolute left-4 top-1/2 -translate-y-1/2 text-[#64748b] pointer-events-none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z" />
@@ -134,7 +134,7 @@ export default function AddClientPage() {
               </div>
 
               <div className="mb-6">
-                <label className="text-[15px] font-semibold text-[#1e293b] mb-2 block">Location / Address</label>
+                <label className="text-[14px] md:text-[15px] font-semibold text-[#1e293b] mb-2 block">Location / Address</label>
                 <textarea
                   placeholder="Enter full business address..."
                   rows={4}
@@ -143,7 +143,7 @@ export default function AddClientPage() {
               </div>
 
               <div className="mb-6">
-                <label className="text-[15px] font-semibold text-[#1e293b] mb-2 block">Timezone</label>
+                <label className="text-[14px] md:text-[15px] font-semibold text-[#1e293b] mb-2 block">Timezone</label>
                 <div className="relative">
                   <select className="w-full appearance-none bg-[#eef1fb] border border-[#e2e6f5] rounded-[10px] px-4 py-3.5 text-[15px] text-[#0f172a] font-[inherit] cursor-pointer focus:outline-2 focus:outline-[#4f46e5] focus:outline-offset-1">
                     <option>UTC (Coordinated Universal Time)</option>
@@ -168,7 +168,7 @@ export default function AddClientPage() {
                 Account Status
               </div>
 
-              <div className="grid grid-cols-2 gap-6 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-5 md:mb-6">
                 <div
                   className="flex items-start gap-3.5 cursor-pointer"
                   onClick={() => setStatus("active")}
@@ -203,7 +203,7 @@ export default function AddClientPage() {
 
               {/* Footer */}
               <div className="flex justify-end items-center gap-5">
-                <Link href="/dashboard/clients" className="text-[15px] font-semibold text-[#1e293b] cursor-pointer hover:text-[#4f46e5] transition-colors no-underline">
+                <Link href="/agencies/clients" className="text-[15px] font-semibold text-[#1e293b] cursor-pointer hover:text-[#4f46e5] transition-colors no-underline">
                   Cancel
                 </Link>
                 <button className="flex items-center gap-2 bg-[#4f46e5] hover:bg-[#4338ca] text-white px-7 py-3.5 rounded-[10px] text-[15px] font-semibold cursor-pointer transition-colors">

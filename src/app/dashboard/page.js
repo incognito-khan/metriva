@@ -71,7 +71,7 @@ export default function DashboardPage() {
         <Sidebar />
         <div className="lg:ml-60 flex flex-col min-h-screen bg-[#f4f6fb]">
           <TopBar breadcrumb="SEO Performance" searchPlaceholder="Search reports..." />
-          <main className="px-10 py-10 flex-1 max-w-[1600px]">
+          <main className="px-5 md:px-10 py-6 md:py-10 flex-1 max-w-[1600px]">
             {/* Row 1 - 4 Metric Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-7">
               {metrics.map((metric, index) => (
@@ -80,7 +80,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Row 2 - Chart + Top Channels */}
-            <div className="flex gap-6 items-stretch">
+            <div className="flex flex-col lg:flex-row gap-5 md:gap-6 items-stretch">
               <div className="flex-1">
                 <LineChart />
               </div>
