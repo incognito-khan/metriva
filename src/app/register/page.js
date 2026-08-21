@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useForm } from "../../hooks/useForm";
 import { useRegister } from "../../hooks/queries/auth";
 import Input from "../../components/Input";
@@ -92,7 +93,7 @@ export default function RegisterPage() {
             <path d="M0 36.9504C192 164.95 448 -91.0496 640 36.9504V548.95H0V36.9504Z" fill="#20225A" />
           </svg>
           <div className="absolute top-6 left-6 z-10 flex items-center gap-4">
-            <img src="/image.png" alt="Metriva Logo" className="w-10 h-10" />
+            <Image src="/image.png" alt="Metriva Logo" width={40} height={40} />
             <span className="text-xl font-bold text-white tracking-tight">Metriva</span>
           </div>
           <div className="relative z-10 px-12">

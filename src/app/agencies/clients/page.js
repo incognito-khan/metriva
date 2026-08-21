@@ -13,7 +13,7 @@ export default function ViewAllClientsPage() {
         <Sidebar />
         <div className="lg:ml-60 flex flex-col min-h-screen bg-[#f4f6fb]">
           <TopBar breadcrumb="SEO Performance" searchPlaceholder="Search reports..." />
-          <main className="px-10 py-10 flex-1 max-w-[1600px]">
+          <main className="px-5 md:px-10 py-6 md:py-10 flex-1 max-w-[1600px]">
             <DashboardStatCards />
             <ClientsTable />
           </main>
