@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  allowedDevOrigins: ["*.serveousercontent.com", "*.shares.zrok.io"],
 };
 
 export default nextConfig;

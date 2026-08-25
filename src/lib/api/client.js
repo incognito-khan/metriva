@@ -1,5 +1,9 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
+const fetchOptions = {
+  credentials: "include", // Ye bhi hona chahiye
+};
+
 let isRefreshing = false;
 let refreshSubscribers = [];
 
